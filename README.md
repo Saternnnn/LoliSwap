@@ -4,7 +4,7 @@
 
 LoliSwap GUI is a Windows desktop application for switching between local Loliland Launcher profiles.
 
-The application provides a graphical interface built with Python `tkinter`. It does not store passwords, does not perform automatic login, and does not bypass authentication. It only saves and restores local launcher profile files for user-owned accounts.
+The application provides a graphical interface built with Python `tkinter`. It saves and restores local launcher profile files for user-owned accounts. Optional autologin can store account passwords encrypted with Windows DPAPI and send them to the launcher with normal keyboard input; it does not bypass authentication.
 
 ## Features
 
@@ -12,8 +12,9 @@ The application provides a graphical interface built with Python `tkinter`. It d
 - Local Loliland Launcher folder selection
 - Launcher executable selection
 - Named profile saving
+- Optional encrypted login/password storage for each profile
 - Switching between saved profiles
-- Optional launcher start after profile switching
+- Optional launcher start and keyboard-based autologin after profile switching
 - Saved profile deletion
 - Local profile folder opening
 - Standalone Windows `.exe` build support with PyInstaller
@@ -25,8 +26,11 @@ The application provides a graphical interface built with Python `tkinter`. It d
 | **Loliland folder** | Path to the local Loliland Launcher data folder |
 | **Launcher EXE** | Path to the launcher executable file |
 | **Start launcher after switching** | Starts the launcher after profile switching |
+| **Autologin after start** | Sends the saved login/password to the active launcher window |
+| **Delay** | Wait time before autologin begins |
 | **Full copy** | Copies all files, including cache, logs, and temporary folders |
 | **Profile** | Profile name, for example `main` or `alt` |
+| **Account login/password** | Optional credentials saved for the selected profile |
 | **Find folder** | Searches for possible Loliland folders |
 | **Save profile** | Saves the current launcher state as a profile |
 | **Switch** | Restores the selected profile |
@@ -44,6 +48,8 @@ C:\Users\YOUR_USER\Documents\LoliSwap
 ```
 
 This folder may contain local session data. It is intentionally kept outside the project repository.
+
+If credentials are saved, passwords are encrypted with Windows DPAPI for the current Windows user. During autologin, LoliSwap briefly uses the clipboard to paste the login and password, then restores the previous clipboard text.
 
 The following data should not be published:
 
@@ -87,6 +93,7 @@ Runtime dependencies are not required. The application uses Python standard libr
 - `shutil`
 - `subprocess`
 - `threading`
+- `ctypes`
 
 For building a standalone executable, PyInstaller is used as a development dependency.
 
@@ -149,7 +156,13 @@ If exactly one matching folder is found, it will be selected automatically. If s
 
 Use **Select .exe** to choose the Loliland Launcher executable.
 
-This is required only when automatic launcher start after profile switching is needed.
+This is required when automatic launcher start or autologin after profile switching is needed.
+
+### 3.1 Optional: save account credentials
+
+For each profile, enter the account login and password and click **Save login/password**.
+
+Passwords are protected with Windows DPAPI and can be decrypted only by the same Windows user account.
 
 ### 4. Save a profile
 
@@ -182,6 +195,8 @@ alt
 Select a saved profile and click **Switch**.
 
 If **Start launcher after switching** is enabled, the selected launcher executable will be started after the profile switch is complete.
+
+If **Autologin after start** is enabled, LoliSwap waits for the configured delay, then sends `login`, `Tab`, `password`, and `Enter` to the active launcher window. Do not switch focus while this is happening.
 
 ## Full copy mode
 
@@ -228,6 +243,8 @@ Select the folder manually with the folder selection button.
 
 The launcher may store part of the session elsewhere or validate the session server-side. LoliSwap does not bypass authentication and cannot guarantee passwordless switching.
 
+If encrypted credentials are saved, enable **Autologin after start** and increase the delay if the launcher window opens slowly.
+
 ### Access denied or file locked
 
 The launcher may still be running. Close Loliland Launcher completely and check for remaining launcher processes in Task Manager.
@@ -258,7 +275,7 @@ LoliSwap GUI is not affiliated with Loliland. The application is intended only f
 
 LoliSwap GUI — это Windows-приложение с графическим интерфейсом для переключения между локальными профилями Loliland Launcher.
 
-Приложение написано на Python и использует стандартный модуль `tkinter` для интерфейса. Оно не хранит пароли, не выполняет автоматический вход и не обходит авторизацию. Программа только сохраняет и восстанавливает локальные файлы профиля лаунчера для аккаунтов, которыми владеет пользователь.
+Приложение написано на Python и использует стандартный модуль `tkinter` для интерфейса. Оно сохраняет и восстанавливает локальные файлы профиля лаунчера для аккаунтов, которыми владеет пользователь. Опциональный автологин может хранить пароли аккаунтов в зашифрованном виде через Windows DPAPI и вводить их в лаунчер обычным клавиатурным вводом; программа не обходит авторизацию.
 
 ## Возможности
 
@@ -266,8 +283,9 @@ LoliSwap GUI — это Windows-приложение с графическим �
 - Выбор локальной папки Loliland Launcher
 - Выбор исполняемого файла лаунчера
 - Сохранение профилей с отдельными именами
+- Опциональное защищённое хранение логина/пароля для каждого профиля
 - Переключение между сохранёнными профилями
-- Опциональный запуск лаунчера после переключения
+- Опциональный запуск лаунчера и автологин после переключения
 - Удаление сохранённых профилей
 - Открытие локальной папки профилей
 - Сборка самостоятельного Windows `.exe` через PyInstaller
@@ -279,8 +297,11 @@ LoliSwap GUI — это Windows-приложение с графическим �
 | **Папка Loliland** | Путь к локальной папке данных Loliland Launcher |
 | **Файл лаунчера** | Путь к `.exe` файлу лаунчера |
 | **Запускать лаунчер после переключения** | Запускает лаунчер после смены профиля |
+| **Автологин после запуска** | Вводит сохранённый логин/пароль в активное окно лаунчера |
+| **Задержка** | Время ожидания перед автологином |
 | **Полное копирование** | Копирует все файлы, включая cache, logs и временные папки |
 | **Профиль** | Имя профиля, например `main` или `alt` |
+| **Логин/пароль аккаунта** | Опциональные данные входа для выбранного профиля |
 | **Найти папку** | Ищет возможные папки Loliland |
 | **Сохранить профиль** | Сохраняет текущее состояние лаунчера |
 | **Переключиться** | Восстанавливает выбранный профиль |
@@ -298,6 +319,8 @@ C:\Users\ИМЯ_ПОЛЬЗОВАТЕЛЯ\Documents\LoliSwap
 ```
 
 Эта папка может содержать локальные данные сессии. Она специально хранится вне папки проекта.
+
+Если в приложении сохранены учётные данные, пароли шифруются через Windows DPAPI для текущего пользователя Windows. Во время автологина LoliSwap кратковременно использует буфер обмена для вставки логина и пароля, затем восстанавливает предыдущий текст буфера.
 
 Следующие данные не должны публиковаться:
 
@@ -341,6 +364,7 @@ LoliSwap
 - `shutil`
 - `subprocess`
 - `threading`
+- `ctypes`
 
 Для сборки самостоятельного исполняемого файла используется PyInstaller как dev-зависимость.
 
@@ -403,7 +427,13 @@ LoliSwap.exe
 
 Кнопка **Выбрать .exe** используется для выбора исполняемого файла Loliland Launcher.
 
-Это требуется только для автоматического запуска лаунчера после переключения профиля.
+Это требуется для автоматического запуска лаунчера или автологина после переключения профиля.
+
+### 3.1 Опционально: сохранение логина и пароля
+
+Для каждого профиля можно ввести логин и пароль аккаунта и нажать **Сохранить логин/пароль**.
+
+Пароль защищается через Windows DPAPI и может быть расшифрован только тем же пользователем Windows.
 
 ### 4. Сохранение профиля
 
@@ -436,6 +466,8 @@ alt
 Выбрать сохранённый профиль и нажать **Переключиться**.
 
 Если включена опция **Запускать лаунчер после переключения**, выбранный исполняемый файл лаунчера будет запущен после завершения переключения.
+
+Если включена опция **Автологин после запуска**, LoliSwap ждёт заданную задержку, затем отправляет в активное окно лаунчера `логин`, `Tab`, `пароль` и `Enter`. Во время этого процесса нельзя переключать фокус окна.
 
 ## Режим полного копирования
 
@@ -481,6 +513,8 @@ LoliSwap
 ### После переключения лаунчер запрашивает пароль
 
 Лаунчер может хранить часть сессии в другом месте или проверять сессию на сервере. LoliSwap не обходит авторизацию и не гарантирует переключение без повторного ввода пароля.
+
+Если логин и пароль сохранены, включите **Автологин после запуска** и увеличьте задержку, если окно лаунчера открывается медленно.
 
 ### Ошибка доступа или файл заблокирован
 
