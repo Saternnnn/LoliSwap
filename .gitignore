@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+ENV/
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Local LoliSwap data - never commit
+LoliSwap/
+profiles/
+config.json
+*.session
+*.token
+*.cookie
+*.cookies
+*.sqlite
+*.db
+
+# Logs and temporary files
+*.log
+logs/
+temp/
+tmp/
+cache/
+crash-reports/
+downloads/
+updates/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Archives
+*.zip
+*.7z
+*.rar
